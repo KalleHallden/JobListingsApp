@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
           body: Container(
-        color: Colors.white,
+        color: backgroundColor,
         child: Column(
           children: <Widget>[
             Stack(
@@ -68,6 +68,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     scrollDirection: Axis.horizontal,
                     children: getRecentJobs()
                   ),
+                ),
+                Container(
+                  height: 500,
+                  margin: EdgeInsets.only(top: 300),
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 40),
+                        child: Text(
+                          "Explore New Opportunities",
+                          style: titileStyleBlack, 
+                          ),
+                      ),
+                      Container(
+                        height: 400,
+                        child: ListView(
+                          children: getJobCategories(),
+                        ),
+                      )
+                    ],
+                  ),
                 )
               ],
             )
@@ -75,6 +98,80 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+  List<String> jobCategories = ["Sales", "Engineering", "Health", "Education", "Finance"];
+
+  Map jobCatToIcon = {
+    "Sales" : Icon(Icons.monetization_on, color: lightBlueIsh, size: 50,),
+    "Engineering" : Icon(Icons.settings, color: lightBlueIsh, size: 50),
+    "Health" : Icon(Icons.healing, color: lightBlueIsh, size: 50),
+    "Education" : Icon(Icons.search, color: lightBlueIsh, size: 50),
+    "Finance" : Icon(Icons.card_membership, color: lightBlueIsh, size: 50),
+  };
+
+  Widget getCategoryContainer(String categoryName) {
+    return new Container(
+          margin: EdgeInsets.only(right: 10, left: 10, bottom: 20),
+          height: 180,
+          width: 140,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            boxShadow: [
+              new BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10.0,
+              ),
+            ],
+          ),
+          child: Column(
+            children: <Widget>[
+              Text(categoryName, style: titileStyleLighterBlack),
+              Container(
+                padding: EdgeInsets.only(top: 30),
+                height: 100,
+                width: 70,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.white,
+                  child:  jobCatToIcon[categoryName],
+                  elevation: 10,
+                  onPressed: () {
+
+                  },
+                ),
+              )
+            ],
+          ),
+        );
+  }
+
+  List<Widget> getJobCategories() {
+    List<Widget> jobCategoriesCards = [];
+    List<Widget> rows = [];
+    int i = 0;
+    for (String category in jobCategories) {
+      if (i < 2) {
+        rows.add(getCategoryContainer(category));
+        i ++;
+      } else {
+        i = 0;
+        jobCategoriesCards.add(new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: rows,
+        ));
+        rows = [];
+        rows.add(getCategoryContainer(category));
+        i++;
+      }
+    }
+    if (rows.length > 0) {
+      jobCategoriesCards.add(new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+          children: rows,
+        ));
+    }
+    return jobCategoriesCards;
   }
 
   List<Job> findJobs() {
